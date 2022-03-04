@@ -4,7 +4,7 @@ CFLAGS := -Iinclude
 PREFIX := /usr/local
 
 all: example
-.PHONY: clean
+.PHONY: clean install
 
 libtest.a: libtest.o
 	ar rcs $@ $<
