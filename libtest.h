@@ -13,10 +13,11 @@
 #define ASSERT_EQ(lhs, rhs) \
   ASSERT_OP(lhs, ==, rhs)
 
-
+// https://stackoverflow.com/questions/5891221/variadic-macros-with-zero-arguments
+#define VA_OPT(...) , ##__VA_ARGS__
 #define FAIL(msg, ...) \
   do{ \
-    snprintf(errormsg, errormsg_size, (msg), __VA_ARGS__); \
+    snprintf(errormsg, errormsg_size, (msg) VA_OPT(__VA_ARGS__)); \
     return testresult_fail; \
   }while(0)
 
