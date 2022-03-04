@@ -8,7 +8,7 @@
     FAIL("Assertion failed: %s", (msg));
 
 #define ASSERT_OP(lhs, op, rhs) \
-  ASSERT_MSG(((lhs) op (rhs)), (#lhs #op #rhs))
+  ASSERT_MSG(((lhs) op (rhs)), (#lhs " " #op " " #rhs))
 
 #define ASSERT_EQ(lhs, rhs) \
   ASSERT_OP(lhs, ==, rhs)

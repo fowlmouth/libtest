@@ -1,12 +1,21 @@
 
+CFLAGS := -Iinclude
+
+PREFIX := /usr/local
+
 all: example
 .PHONY: clean
 
-%.o: %.c
-	cc -c $<
+libtest.a: libtest.o
+	ar rcs $@ $<
 
-example: example.o libtest.o
+example: example.o libtest.a
 	cc -o $@ $^
 
+install: libtest.a
+	mkdir -p "$(PREFIX)/lib" "$(PREFIX)/include"
+	install libtest.a "$(PREFIX)/lib/"
+	install include/*.h "$(PREFIX)/include/"
+
 clean:
-	rm example *.o
+	rm -f example *.o *.a

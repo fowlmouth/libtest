@@ -22,9 +22,10 @@ struct test_suite* suites = NULL;
 
 struct test_suite* get_suite(const char* name)
 {
-  for(int i = 0; i < suite_count; ++i)
+  for(struct test_suite* suite = suites, *end = suite + suite_count;
+    suite != end;
+    ++suite)
   {
-    struct test_suite* suite = suites+i;
     if(!strcmp(name, suite->name))
       return suite;
   }
