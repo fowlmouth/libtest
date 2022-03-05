@@ -55,8 +55,6 @@ void save_case(struct test_suite* suite, const char* name, libtest_testfunction 
 
 int libtest_register_test(const char* testsuite, const char* testcase, libtest_testfunction fn)
 {
-  printf("registering suite='%s' case='%s'\n", testsuite, testcase);
-
   struct test_suite* suite = get_suite(testsuite);
   save_case(suite, testcase, fn);
 
