@@ -3,9 +3,14 @@
 
 #include <stdio.h>
 
+
 #define ASSERT_MSG(bool, msg) \
   if(!(bool)) \
     FAIL("Assertion failed: %s", (msg));
+
+#define ASSERT_MSGF(bool, msg, ...) \
+  if(!(bool)) \
+    FAIL((msg), __VA_ARGS__);
 
 #define ASSERT_OP(lhs, op, rhs) \
   ASSERT_MSG(((lhs) op (rhs)), (#lhs " " #op " " #rhs))
