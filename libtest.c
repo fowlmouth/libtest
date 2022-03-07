@@ -83,8 +83,12 @@ void libtest_default_report(const char* testsuite, const char* testcase, int fai
 
   if(lastreport_suite != testsuite)
   {
-    fprintf(stderr, "Running test suite '%s'\n", testsuite);
     lastreport_suite = testsuite;
+    if(!testsuite)
+    {
+      return;
+    }
+    fprintf(stderr, "Running test suite '%s'\n", testsuite);
   }
 
   fprintf(stderr, "[%s] %s", (failed ? "FAIL" : " OK "), testcase);
@@ -129,6 +133,7 @@ void libtest_run_test_suite(struct test_suite* suite, libtest_report report)
     report(suite->name, iter->name, failed, error_buffer_size, error_buffer);
   }
   free(data);
+  report(NULL, NULL, 0, 0, NULL);
 }
 
 
