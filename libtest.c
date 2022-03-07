@@ -15,10 +15,18 @@ struct test_suite
 
   int case_count, case_capacity;
   struct test_case* cases;
+
+  int data_size;
+  void (*pre)(void*), (*post)(void*);
 };
 
 int suite_count = 0, suite_capacity = 0;
 struct test_suite* suites = NULL;
+
+static void do_nothing(void* arg)
+{
+  (void)arg;
+}
 
 struct test_suite* get_suite(const char* name)
 {
@@ -38,6 +46,8 @@ struct test_suite* get_suite(const char* name)
   suite->name = name;
   suite->case_count = suite->case_capacity = 0;
   suite->cases = NULL;
+  suite->data_size = 0;
+  suite->pre = suite->post = do_nothing;
   return suite;
 }
 
@@ -108,9 +118,24 @@ void libtest_run_test_suite(struct test_suite* suite, libtest_report report)
 {
   const int error_buffer_size = 1024;
   char error_buffer[error_buffer_size];
+  void* data = calloc(suite->data_size, 1);
+  void (*pre)(void*) = suite->pre,
+    (*post)(void*) = suite->post;
   for(struct test_case* iter = suite->cases, *end = iter + suite->case_count; iter != end; ++iter)
   {
-    int failed = iter->fn(error_buffer_size, error_buffer);
+    pre(data);
+    int failed = iter->fn(error_buffer_size, error_buffer, data);
+    post(data);
     report(suite->name, iter->name, failed, error_buffer_size, error_buffer);
   }
+  free(data);
+}
+
+
+void libtest_config_suite(const char* testsuite, int data_size, void(*pre)(void*), void(*post)(void*))
+{
+  struct test_suite* suite = get_suite(testsuite);
+  suite->data_size = data_size;
+  suite->pre = pre;
+  suite->post = post;
 }

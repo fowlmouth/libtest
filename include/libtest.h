@@ -37,13 +37,13 @@ typedef enum {
   testresult_pass, testresult_fail
 } libtest_testresult;
 
-typedef libtest_testresult (*libtest_testfunction)(int, char*);
+typedef libtest_testresult (*libtest_testfunction)(int, char*, void*);
 
 #define TEST_FUNCTION_NAME(testsuite, testcase) \
   _test_##testsuite_##testcase
 
 #define DECL_TEST(testsuite, testcase) \
-  libtest_testresult TEST_FUNCTION_NAME(testsuite, testcase) (int errormsg_size, char* errormsg)
+  libtest_testresult TEST_FUNCTION_NAME(testsuite, testcase) (int errormsg_size, char* errormsg, void* data)
 
 #define TEST(testsuite, testcase) \
   DECL_TEST(testsuite, testcase); \
@@ -53,6 +53,13 @@ typedef libtest_testresult (*libtest_testfunction)(int, char*);
     libtest_register_test(#testsuite, #testcase, TEST_FUNCTION_NAME(testsuite, testcase)); \
   } \
   DECL_TEST(testsuite, testcase)
+
+#define SUITE(testsuite, data_size, pre_function, post_function) \
+  __attribute__((constructor)) \
+  void _libtest_internal_suitecfg_##testsuite_##__LINE__(void) \
+  { \
+    libtest_config_suite(#testsuite, data_size, pre_function, post_function); \
+  }
 
 #define RUN_TESTS() \
   libtest_run_all_suites()
@@ -71,6 +78,7 @@ void libtest_run_all_suites_report(libtest_report);
 
 void libtest_default_report(const char* testsuite, const char* testcase, int failed, int error_buffer_size, const char* error_buffer);
 
+void libtest_config_suite(const char* testsuite, int data_size, void(*pre)(void*), void(*post)(void*));
 
 
 #endif
