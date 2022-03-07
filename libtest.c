@@ -61,26 +61,56 @@ int libtest_register_test(const char* testsuite, const char* testcase, libtest_t
   return 0;
 }
 
-void libtest_run_test_suite(struct test_suite* suite);
+const char* lastreport_suite = NULL;
+int lastreport_passed = 0, lastreport_total = 0;
+void libtest_default_report(const char* testsuite, const char* testcase, int failed, int error_buffer_size, const char* error_buffer)
+{
+  if(lastreport_suite && lastreport_suite != testsuite)
+  {
+    fprintf(stderr, "%d/%d passed.\n\n", lastreport_passed, lastreport_total);
+    lastreport_passed = lastreport_total = 0;
+  }
+
+  if(lastreport_suite != testsuite)
+  {
+    fprintf(stderr, "Running test suite '%s'", testsuite);
+    lastreport_suite = testsuite;
+  }
+
+  fprintf(stderr, "[%s] %s", (failed ? "FAIL" : " OK "), testcase);
+  if(failed)
+  {
+    fprintf(stderr, " %s", error_buffer);
+  }
+  fprintf(stderr, "\n");
+
+  ++lastreport_total;
+  if(!failed)
+    ++lastreport_passed;
+}
+
+void libtest_run_test_suite(struct test_suite*, libtest_report);
 void libtest_run_all_suites()
+{
+  libtest_run_all_suites_report(libtest_default_report);
+}
+
+void libtest_run_all_suites_report(libtest_report report)
 {
   for(struct test_suite* iter = suites, *end = iter + suite_count; iter != end; ++iter)
   {
-    libtest_run_test_suite(iter);
+    libtest_run_test_suite(iter, report);
   }
 }
 
-void libtest_run_test_suite(struct test_suite* suite)
+
+void libtest_run_test_suite(struct test_suite* suite, libtest_report report)
 {
   const int error_buffer_size = 1024;
   char error_buffer[error_buffer_size];
   for(struct test_case* iter = suite->cases, *end = iter + suite->case_count; iter != end; ++iter)
   {
-    int failures = 0;
-    if(iter->fn(error_buffer_size, error_buffer))
-    {
-      fprintf(stderr, "%s:%s failed: %s\n", suite->name, iter->name, error_buffer);
-      ++failures;
-    }
+    int failed = iter->fn(error_buffer_size, error_buffer);
+    report(suite->name, iter->name, failed, error_buffer_size, error_buffer);
   }
 }
