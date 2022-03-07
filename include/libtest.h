@@ -12,6 +12,9 @@
   if(!(bool)) \
     FAIL((msg), __VA_ARGS__);
 
+#define ASSERT(bool) \
+  ASSERT_MSG(bool, #bool)
+
 #define ASSERT_OP(lhs, op, rhs) \
   ASSERT_MSG(((lhs) op (rhs)), (#lhs " " #op " " #rhs))
 
