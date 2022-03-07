@@ -73,7 +73,7 @@ void libtest_default_report(const char* testsuite, const char* testcase, int fai
 
   if(lastreport_suite != testsuite)
   {
-    fprintf(stderr, "Running test suite '%s'", testsuite);
+    fprintf(stderr, "Running test suite '%s'\n", testsuite);
     lastreport_suite = testsuite;
   }
 
