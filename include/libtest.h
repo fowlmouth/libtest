@@ -21,6 +21,12 @@
 #define ASSERT_EQ(lhs, rhs) \
   ASSERT_OP(lhs, ==, rhs)
 
+#define ASSERT_LT(lhs, rhs) \
+  ASSERT_OP(lhs, <, rhs)
+
+#define ASSERT_GT(lhs, rhs) \
+  ASSERT_OP(lhs, >, rhs)
+
 // https://stackoverflow.com/questions/5891221/variadic-macros-with-zero-arguments
 #define VA_OPT(...) , ##__VA_ARGS__
 #define FAIL(msg, ...) \
