@@ -25,7 +25,7 @@
 #define VA_OPT(...) , ##__VA_ARGS__
 #define FAIL(msg, ...) \
   do{ \
-    snprintf(errormsg, errormsg_size, (msg) VA_OPT(__VA_ARGS__)); \
+    snprintf(errormsg, errormsg_size, (msg) ,##__VA_ARGS__); \
     return testresult_fail; \
   }while(0)
 
