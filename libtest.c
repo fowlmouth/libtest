@@ -128,9 +128,10 @@ void libtest_run_test_suite(struct test_suite* suite, libtest_report report)
   for(struct test_case* iter = suite->cases, *end = iter + suite->case_count; iter != end; ++iter)
   {
     pre(data);
-    int failed = iter->fn(error_buffer_size, error_buffer, data);
+    libtest_testresult result = testresult_pass;
+    iter->fn(error_buffer_size, error_buffer, data, &result);
     post(data);
-    report(suite->name, iter->name, failed, error_buffer_size, error_buffer);
+    report(suite->name, iter->name, (int)result, error_buffer_size, error_buffer);
   }
   free(data);
   report(NULL, NULL, 0, 0, NULL);

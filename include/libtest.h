@@ -32,24 +32,28 @@
 #define FAIL(msg, ...) \
   do{ \
     snprintf(errormsg, errormsg_size, (msg) ,##__VA_ARGS__); \
-    return testresult_fail; \
+    *testresult = testresult_fail; \
+    return; \
   }while(0)
 
 
 #define PASS() \
-  return testresult_pass;
+  do{ \
+    *testresult = testresult_pass; \
+    return; \
+  }while(0)
 
 typedef enum {
   testresult_pass, testresult_fail
 } libtest_testresult;
 
-typedef libtest_testresult (*libtest_testfunction)(int, char*, void*);
+typedef void (*libtest_testfunction)(int, char*, void*, libtest_testresult*);
 
 #define TEST_FUNCTION_NAME(testsuite, testcase) \
   _test_##testsuite_##testcase
 
 #define DECL_TEST(testsuite, testcase) \
-  libtest_testresult TEST_FUNCTION_NAME(testsuite, testcase) (int errormsg_size, char* errormsg, void* data)
+  void TEST_FUNCTION_NAME(testsuite, testcase) (int errormsg_size, char* errormsg, void* data, libtest_testresult* testresult)
 
 #define TEST(testsuite, testcase) \
   DECL_TEST(testsuite, testcase); \
