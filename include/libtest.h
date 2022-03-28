@@ -50,7 +50,7 @@ typedef enum {
 typedef void (*libtest_testfunction)(int, char*, void*, libtest_testresult*);
 
 #define TEST_FUNCTION_NAME(testsuite, testcase) \
-  _test_##testsuite_##testcase
+  _test_##testsuite##_##testcase
 
 #define DECL_TEST(testsuite, testcase) \
   void TEST_FUNCTION_NAME(testsuite, testcase) (int errormsg_size, char* errormsg, void* data, libtest_testresult* testresult)
@@ -58,7 +58,7 @@ typedef void (*libtest_testfunction)(int, char*, void*, libtest_testresult*);
 #define TEST(testsuite, testcase) \
   DECL_TEST(testsuite, testcase); \
   __attribute__((constructor)) \
-  void _libtest_internal_register_##testsuite_##testcase(void) \
+  void _libtest_internal_register_##testsuite##_##testcase(void) \
   { \
     libtest_register_test(#testsuite, #testcase, TEST_FUNCTION_NAME(testsuite, testcase)); \
   } \
