@@ -6,7 +6,7 @@
 
 #define ASSERT_MSG(bool, msg) \
   if(!(bool)) \
-    FAIL("Assertion failed: %s", (msg));
+    FAIL("Assertion failed: %s (file= %s line= %d)", (msg), (__FILE__), (__LINE__));
 
 #define ASSERT_MSGF(bool, msg, ...) \
   if(!(bool)) \
@@ -66,7 +66,7 @@ typedef void (*libtest_testfunction)(int, char*, void*, libtest_testresult*);
 
 #define SUITE(testsuite, data_size, pre_function, post_function) \
   __attribute__((constructor)) \
-  void _libtest_internal_suitecfg_##testsuite_##__LINE__(void) \
+  void _libtest_internal_suitecfg_##testsuite(void) \
   { \
     libtest_config_suite(#testsuite, data_size, pre_function, post_function); \
   }
